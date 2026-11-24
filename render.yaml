@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: turboaz-bot
+    name: turbote
     runtime: node
     plan: free
     buildCommand: npm install --omit=dev
@@ -12,10 +12,10 @@ services:
       - key: BOT_TOKEN
         sync: false
       - key: ALLOWED_USER_IDS
-        sync: false
-      - key: GITHUB_TOKEN
-        sync: false
+        value: "529022236"
       - key: CHECK_INTERVAL_SEC
         value: "60"
       - key: NEW_ONLY
         value: "true"
+      - key: GITHUB_TOKEN
+        value: ""

@@ -22,6 +22,7 @@ const cfg = {
   maxFilters: Number(process.env.MAX_FILTERS) || 30,
   maxPerCheck: 10, // bir yoxlamada bir filtr üçün maksimum bildiriş
   port: Number(process.env.PORT) || 0,
+  keepAliveUrl: (process.env.KEEPALIVE_URL || process.env.RENDER_EXTERNAL_URL || '').trim().replace(/\/+$/, ''),
   githubToken: process.env.GITHUB_TOKEN || '',
   gistId: process.env.GIST_ID || '',
 };
@@ -492,6 +493,15 @@ function startHealthServer(port) {
   server.listen(port, '0.0.0.0', () => {
     console.log(`🌐 HTTP sağlamlıq serveri aktivdir: 0.0.0.0:${port} (/health)`);
   });
+
+  if (cfg.keepAliveUrl) {
+    const target = `${cfg.keepAliveUrl}/health`;
+    const timer = setInterval(() => {
+      fetch(target, { signal: AbortSignal.timeout(15000) }).catch(() => {});
+    }, 10 * 60 * 1000);
+    timer.unref?.();
+    console.log(`⏰ Avtomatik oyadıcı aktivdir (hər 10 dəq): ${target}`);
+  }
   return server;
 }
 
